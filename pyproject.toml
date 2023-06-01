@@ -1,0 +1,15 @@
+[tool.poetry]
+name = "python-sqlite-formation"
+version = "0.1.0"
+description = ""
+authors = ["NyxAether <contact.nyxhemera@gmail.com>"]
+readme = "README.md"
+packages = [{include = "python_sqlite_formation"}]
+
+[tool.poetry.dependencies]
+python = "^3.11"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
