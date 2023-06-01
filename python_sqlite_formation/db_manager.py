@@ -29,7 +29,6 @@ class SQLiteManager:
     def check_connection(func: Callable[..., Any]) -> Callable[..., Any]:
         @wraps(func)
         def wrapper(*args, **kwargs):
-            # Add your decorator logic here
             args[0].connect()
             return func(*args, **kwargs)
 
