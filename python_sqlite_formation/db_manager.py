@@ -1,3 +1,4 @@
+from contextlib import contextmanager
 import sqlite3
 from typing import Any, Callable, Iterable, TypeVar
 from functools import wraps
@@ -10,6 +11,7 @@ class SQLiteManager:
         Args:
             path (str): path to the database
         """
+        print("INIT")
         self.db_path = db_path
         self.conn = None
         self.cursor = None
@@ -17,7 +19,9 @@ class SQLiteManager:
     def connect(self):
         """Establish a connection to a db
         """
+        
         if self.conn is None:
+            print("CONNECT")
             self.conn = sqlite3.connect(self.db_path)
         if self.cursor is None:
             self.cursor = self.conn.cursor()
@@ -50,6 +54,16 @@ class SQLiteManager:
         """
         Close a connection
         """
-        self.conn.close()
-        self.conn = None
-        self.cursor = None
+        if self.conn is not None:
+            print("CLOSE")
+            self.conn.close()
+            self.conn = None
+        if self.cursor is not None:
+            self.cursor = None
+    
+    def __enter__(self):
+        self.connect()
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        self.close()
