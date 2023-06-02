@@ -42,12 +42,32 @@ class SQLiteManager:
         self.conn.commit()
 
     @check_connection
-    def drop_table(self, table_name: str, if_exists=True):
+    def drop_table(self, table_name: str, if_exists=True) -> None:
         if_exists_text = "IF EXISTS" if if_exists else ""
         query =f"""DROP TABLE {if_exists_text} {table_name}"""
         print(query)
         self.cursor.execute(query)
         self.conn.commit()
+
+    @check_connection
+    def add_values(self,table_name:str, values:Iterable[Iterable[str]]) -> None:
+        query = f'''INSERT INTO {table_name} VALUES ({",".join("?" for i in range(len(values[0])))})'''
+        print(query)
+        self.cursor.executemany(query,values)
+        self.conn.commit()
+
+    @check_connection
+    def display_table(self,table_name:str) -> None:
+        query = f"""SELECT * FROM {table_name}"""
+        print(query)
+        self.cursor.execute(query)
+        print(self.cursor.fetchall())
+
+    @check_connection
+    def execute_query(self, query: str) -> Iterable[Iterable[str]] | Iterable[str]:
+        self.cursor.execute(query)
+        return self.cursor.fetchall()
+
 
     def close(self):
         """
