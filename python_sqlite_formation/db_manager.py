@@ -1,6 +1,5 @@
-from contextlib import contextmanager
 import sqlite3
-from typing import Any, Callable, Iterable, TypeVar
+from typing import Any, Callable, Iterable
 from functools import wraps
 
 
@@ -17,9 +16,8 @@ class SQLiteManager:
         self.cursor = None
 
     def connect(self):
-        """Establish a connection to a db
-        """
-        
+        """Establish a connection to a db"""
+
         if self.conn is None:
             print("CONNECT")
             self.conn = sqlite3.connect(self.db_path)
@@ -44,20 +42,21 @@ class SQLiteManager:
     @check_connection
     def drop_table(self, table_name: str, if_exists=True) -> None:
         if_exists_text = "IF EXISTS" if if_exists else ""
-        query =f"""DROP TABLE {if_exists_text} {table_name}"""
+        query = f"""DROP TABLE {if_exists_text} {table_name}"""
         print(query)
         self.cursor.execute(query)
         self.conn.commit()
 
     @check_connection
-    def add_values(self,table_name:str, values:Iterable[Iterable[str]]) -> None:
-        query = f'''INSERT INTO {table_name} VALUES ({",".join("?" for i in range(len(values[0])))})'''
+    def add_values(self, table_name: str, values: Iterable[Iterable[str]]) -> None:
+        query = f"""INSERT INTO {table_name}
+                    VALUES ({",".join("?" for i in range(len(values[0])))})"""
         print(query)
-        self.cursor.executemany(query,values)
+        self.cursor.executemany(query, values)
         self.conn.commit()
 
     @check_connection
-    def display_table(self,table_name:str) -> None:
+    def display_table(self, table_name: str) -> None:
         query = f"""SELECT * FROM {table_name}"""
         print(query)
         self.cursor.execute(query)
@@ -67,7 +66,6 @@ class SQLiteManager:
     def execute_query(self, query: str) -> Iterable[Iterable[str]] | Iterable[str]:
         self.cursor.execute(query)
         return self.cursor.fetchall()
-
 
     def close(self):
         """
@@ -79,7 +77,7 @@ class SQLiteManager:
             self.conn = None
         if self.cursor is not None:
             self.cursor = None
-    
+
     def __enter__(self):
         self.connect()
         return self
