@@ -1,5 +1,5 @@
 import sqlite3
-from typing import Callable, Iterable, ParamSpec, TypeVar
+from typing import Callable, Concatenate, Iterable, ParamSpec, Self, TypeVar
 from functools import wraps
 
 T = TypeVar("T")
@@ -15,8 +15,8 @@ class SQLiteManager:
         """
         print("INIT")
         self.db_path = db_path
-        self.conn = None
-        self.cursor = None
+        self.conn: None | sqlite3.Connection = None
+        self.cursor: None | sqlite3.Cursor = None
 
     def connect(self) -> None:
         """Establish a connection to a db"""
@@ -27,11 +27,13 @@ class SQLiteManager:
         if self.cursor is None:
             self.cursor = self.conn.cursor()
 
-    def check_connection(func: Callable[P, T]) -> Callable[P, T]:
+    def check_connection(
+        func: Callable[Concatenate[Self, P], T]
+    ) -> Callable[Concatenate[Self, P], T]:
         @wraps(func)
-        def wrapper(*args: P.args, **kwargs: P.kwargs) -> T:
-            args[0].connect()
-            return func(*args, **kwargs)
+        def wrapper(self: Self, *args: P.args, **kwargs: P.kwargs) -> T:
+            self.connect()
+            return func(self, *args, **kwargs)
 
         return wrapper
 
