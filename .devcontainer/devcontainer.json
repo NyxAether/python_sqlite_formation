@@ -39,10 +39,10 @@
 				"ms-python.python",
 				"ms-python.black-formatter",
 				"ms-python.isort",
-				"2gua.rainbow-brackets",
 				"be5invis.toml",
 				"vscode-icons-team.vscode-icons",
-				"MS-CEINTL.vscode-language-pack-fr"
+				"MS-CEINTL.vscode-language-pack-fr",
+				"ms-vsliveshare.vsliveshare"
 			]
 		}
 	}
