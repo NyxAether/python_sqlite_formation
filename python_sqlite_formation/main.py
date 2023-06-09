@@ -7,12 +7,6 @@ if __name__ == "__main__":
         ("Cyrano de Bergerac", "1", "1990", "comedy drama"),
     ]
 
-    directors = [
-        ("1", "Jean-Paul", "Rappeneau", "1932-04-08"),
-        ("2", "George", "Miller", "1945-03-05"),
-        ("3", "Hayao", "Miyazaki", "1941-01-05"),
-    ]
-
     # Open a connection
     connection = sqlite3.connect("sql/database.db")
     cursor = connection.cursor()
@@ -23,7 +17,7 @@ if __name__ == "__main__":
     # Insert values
     query = f"""INSERT INTO movies VALUES ({",".join("?" for i in range(len(movies[0])))})"""
     for movie in movies:
-        cursor.execute(query,movie)
+        cursor.execute(query, movie)
     # Commit the database modifications
     connection.commit()
 
