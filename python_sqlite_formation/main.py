@@ -30,8 +30,8 @@ if __name__ == "__main__":
         print(
             db_manager.execute_query(
                 """SELECT *
-                                        FROM movies NATURAL JOIN directors
-                                        WHERE release_date < 2000"""
+                FROM movies NATURAL JOIN directors
+                WHERE release_date < 2000"""
             )
         )
 
