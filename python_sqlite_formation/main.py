@@ -1,4 +1,4 @@
-from db_manager import SQLiteManager
+import sqlite3
 
 if __name__ == "__main__":
     movies = [
@@ -13,27 +13,26 @@ if __name__ == "__main__":
         ("3", "Hayao", "Miyazaki", "1941-01-05"),
     ]
 
-    with SQLiteManager("sql/database.db") as db_manager:
-        db_manager.create_table(
-            "movies",
-            ["title TEXT", "director_id TEXT", "release_date TEXT", "type TEXT"],
-        )
-        db_manager.create_table(
-            "directors",
-            ["director_id TEXT", "first_name TEXT", "last_name TEXT", "born TEXT"],
-        )
+    # Open a connection
+    connection = sqlite3.connect("sql/database.db")
+    cursor = connection.cursor()
 
-        db_manager.add_values("movies", movies)
-        db_manager.add_values("directors", directors)
-        db_manager.display_table("movies")
+    # Create tables in a dataset
+    query = f"""CREATE TABLE movies ({", ".join(["title TEXT", "director_id TEXT", "release_date TEXT", "type TEXT"])});"""
+    cursor.execute(query)
+    # Insert values
+    query = f"""INSERT INTO movies VALUES ({",".join("?" for i in range(len(movies[0])))})"""
+    for movie in movies:
+        cursor.execute(query,movie)
+    # Commit the database modifications
+    connection.commit()
 
-        print(
-            db_manager.execute_query(
-                """SELECT *
-                                        FROM movies NATURAL JOIN directors
-                                        WHERE release_date < 2000"""
-            )
-        )
+    # # Drop table
+    # query = """DROP TABLE movies"""
+    # cursor.execute(query)
+    # connection.commit()
 
-        db_manager.drop_table("movies")
-        db_manager.drop_table("directors")
+    connection.close()
+    # # Since connection is closed, a sqlite.ProgrammingError will occur
+    # query = """SELECT * FROM movies"""
+    # cursor.execute(query)
